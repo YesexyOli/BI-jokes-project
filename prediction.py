@@ -125,7 +125,7 @@ else:
     start_col_jokes = int(sys.argv[3])
     size_subset = int(sys.argv[4])
     num_prozess = int(sys.argv[5])
-    print_boolean = sys.argv[6] == True
+    print_boolean = sys.argv[6] == 'True'
 
     begin_subset = 0
 
