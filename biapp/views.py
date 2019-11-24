@@ -41,8 +41,8 @@ def register():
         uname = request.form['uname']
         passw = request.form['passw']
 
-        print(uname, file=sys.stdout)
-        print(passw, file=sys.stderr)
+        print(uname, sys.stdout)
+        print(passw, sys.stderr)
         sys.stdout.flush()
         register = user(username = uname, password = passw)
         db.session.add(register)
