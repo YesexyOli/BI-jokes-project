@@ -1,6 +1,8 @@
 """Because the  recommander for the web page the webpage musst be
 very fast not all users are compared with each other instead each user is
-compared to a representiv subsample of the users."""
+compared to a representiv subsample of the users.
+Number of vectors with which the similarity is calculated goes liniary into the time the
+script needs. Change from 100 to 20 makes the script 5 times faster. """
 
 import sys
 import numpy as np
@@ -15,24 +17,16 @@ def load_data(filename):
     return df
 
 
-def calc_ratings(row, center, start_col_jokes ):
-    return row
+def similarity_func(v_full, u_full):
+    index = np.where(u_full != 99)
+    if len(index) > 0:
+        v = v_full.to_numpy()[index]
+        u = u_full.to_numpy()[index]
+        if np.count_nonzero(v) and np.count_nonzero(u):
+            return np.dot(v, u)/(np.linalg.norm(v)*np.linalg.norm(u))
+    return 0
 
-def similarity_func(v, u):
-    counter = 0
-    abs_u = 0
-    abs_v = 0
-    for i in range(len(u)):
-        if u[i] != 99:
-            counter += u[i]*v[i]
-            abs_u += np.abs(u[i])
-            abs_v += np.abs(v[i])
-    if abs_u != 0 and abs_v != 0:
-        return counter/(abs_u*abs_v)
-    else: return 0
-
-
-def make_perdiction_one_row(row, df_center, start_index_jokes):
+def make_perdiction_one_row(row, start_index_jokes):
     """
     :param row:
     :param df_center: already centered 
@@ -45,7 +39,7 @@ def make_perdiction_one_row(row, df_center, start_index_jokes):
     if row_norm['NEED_TO_CHANGE'] == 1:
         for column in row.index[3:]:
             if row_norm.loc[column] == 99:
-                rating = np.dot(sim_vec, df_center[column].replace(99,0))
+                rating = np.dot(sim_vec, df_center[column].replace(99, 0))
                 total_weight = np.sum(np.abs(sim_vec))
                 if total_weight == 0:
                     row_norm_with_prediction.loc[column] = 0
@@ -100,9 +94,10 @@ while True:
     if print_boolean:
         print(" Make Prediction per line.")
     df_prediction = df_ratings.progress_apply(make_perdiction_one_row, axis=1,
-                                  args=[df_center, start_col_jokes])
+                                  args=[ start_col_jokes]) #df_center,
     if print_boolean:
         print(" Find best Jokes: ")
-    df_best_jokes = df_prediction.progress_apply(find_best_predictions, 1, args=[start_col_jokes])
-
+    df_best_jokes = df_prediction.progress_apply(find_best_predictions, axis=1, args=[start_col_jokes])
+    if print_boolean:
+        print(" Save Prediction in {} ".format(output_file))
     df_best_jokes.to_csv(output_file, index=False, header=False)
