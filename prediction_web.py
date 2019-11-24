@@ -26,7 +26,7 @@ def similarity_func(v_full, u_full):
             return np.dot(v, u)/(np.linalg.norm(v)*np.linalg.norm(u))
     return 0
 
-def make_perdiction_one_row(row, start_index_jokes):
+def make_perdiction_one_row(row, df_center, start_index_jokes):
     """
     :param row:
     :param df_center: already centered 
@@ -34,6 +34,7 @@ def make_perdiction_one_row(row, start_index_jokes):
     :return: 
     """
     row_norm, mean = normalize(row, start_index_jokes)
+    #row_norm = row
     row_norm_with_prediction = row_norm.copy()
     sim_vec = df_center.apply(similarity_func, args=[row_norm[start_index_jokes:]], axis=1)
     if row_norm['NEED_TO_CHANGE'] == 1:
@@ -48,7 +49,7 @@ def make_perdiction_one_row(row, start_index_jokes):
             else: row_norm_with_prediction.loc[column] = -99
         row_norm_with_prediction['NEED_TO_CHANGE'] = 0
     row_denorm_with_pred = denormalize(row_norm_with_prediction, start_index_jokes, mean)
-    return row_denorm_with_pred
+    return  row_denorm_with_pred #row_norm_with_prediction
 
 
 
@@ -80,24 +81,28 @@ def find_best_predictions(row, start_index_jokes):
                         pd.Series(list(jokes.index))])
     return result
 
+if __name__ == '__main__':
+    while True:
+        df_ratings = load_data(sys.argv[1])
+        df_center = load_data(sys.argv[2])
+        if df_center.shape[1] -3 == df_ratings.shape[1]:
+            print('Good the dataframe with the vectors to compare has 3 Columms less the should allready be normalized')
+        else:
+            print('Attention the dataframe with the vectors to compare could have the wrong form, it should not have the Colummns USER_ID,NEED_TO_CHANGE,Rated_Jokes')
+        output_file = sys.argv[3]
+        start_col_jokes = int(sys.argv[4])
+        num_prozess = int(sys.argv[5])
+        print_boolean = sys.argv[6] == 'True'
 
-while True:
-    df_ratings = load_data(sys.argv[1])
-    df_center = load_data(sys.argv[2])
-    output_file = sys.argv[3]
-    start_col_jokes = int(sys.argv[4])
-    num_prozess = int(sys.argv[5])
-    print_boolean = sys.argv[6] == 'True'
-
-    begin_subset = 0
-    tqdm.pandas()
-    if print_boolean:
-        print(" Make Prediction per line.")
-    df_prediction = df_ratings.progress_apply(make_perdiction_one_row, axis=1,
-                                  args=[ start_col_jokes]) #df_center,
-    if print_boolean:
-        print(" Find best Jokes: ")
-    df_best_jokes = df_prediction.progress_apply(find_best_predictions, axis=1, args=[start_col_jokes])
-    if print_boolean:
-        print(" Save Prediction in {} ".format(output_file))
-    df_best_jokes.to_csv(output_file, index=False, header=False)
+        begin_subset = 0
+        tqdm.pandas()
+        if print_boolean:
+            print(" Make Prediction per line.")
+        df_prediction = df_ratings.progress_apply(make_perdiction_one_row, axis=1,
+                                      args=[df_center, start_col_jokes])
+        if print_boolean:
+            print(" Find best Jokes: ")
+        df_best_jokes = df_prediction.progress_apply(find_best_predictions, axis=1, args=[start_col_jokes])
+        if print_boolean:
+            print(" Save Prediction in {} ".format(output_file))
+        df_best_jokes.to_csv(output_file, index=False, header=False)

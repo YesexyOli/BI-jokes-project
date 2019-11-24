@@ -8,6 +8,9 @@ import pandas as pd
 # import hierarchical clustering libraries
 from sklearn.cluster import KMeans
 import numpy as np
+from tqdm import tqdm
+
+
 def get_full_rated_jokes():
     df = pd.read_csv("data/jester_data_100_boiled.csv",  header=0)
     df = df.loc[df['Rated_Jokes'] == 100, :]
@@ -32,10 +35,19 @@ def get_n_most_different_user(num_cluster):
     centers = kmeans.cluster_centers_
     df_centers = pd.DataFrame(centers, columns=df.columns[3:])
     df_centers.drop_duplicates(inplace=True)
-    if df_centers.shape[0]!=num_cluster:
-        print("{} out of {} centers where drop because they where duplicates".format(num_cluster - df_centers.shape[0], num_cluster) )
+    if df_centers.shape[0] != num_cluster:
+        droped_lines = num_cluster - df_centers.shape[0]
+        print("{} out of {} centers where drop because they where duplicates".format(droped_lines, num_cluster))
     df_centers.to_csv('data/centers_norm', index=False)
+
+def load_data(filename):
+    df = pd.read_csv(filename, index_col=None, header=0)
+    return df
 
 if __name__ == '__main__':
     #get_full_rated_jokes()
-    get_n_most_different_user(100)
+    get_n_most_different_user(50)
+    #df = load_data('data/full_rated_jokes.csv')
+    #tqdm.pandas()
+    #df_norm = df.progress_apply(normalize, axis=1, args=[3])
+    #df_norm.to_csv('data/full_rated_jokes_norm.csv', index=False, header=False)
