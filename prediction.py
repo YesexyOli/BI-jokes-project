@@ -1,3 +1,8 @@
+"""
+script to predict unrated jokes with user-to-user filtering
+include multiprocessing to make predictions faster
+"""
+
 import sys
 import numpy as np
 import pandas as pd

@@ -1,3 +1,6 @@
+"""
+The attempt to use a neural network to make predictions
+"""
 from keras import Sequential
 from keras.layers import Input, Dense
 from keras.models import Model

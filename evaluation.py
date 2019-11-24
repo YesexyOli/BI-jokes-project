@@ -35,8 +35,8 @@ def store_to_list():
     random_choose()
 
     while df.iloc[i, j] == 0 :
-    if df.iloc[i, j] != 99:
-        original_data = [[i, j, df.iloc[i][j]]]
+        if df.iloc[i, j] != 99:
+            original_data = [[i, j, df.iloc[i][j]]]
     else:
         random_choose()
 
