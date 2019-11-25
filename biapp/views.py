@@ -3,6 +3,9 @@ from flask_sqlalchemy import SQLAlchemy
 
 import sys
 import csv
+import collections
+import time
+import pandas as pd
 
 app = Flask(__name__)
 
@@ -24,18 +27,54 @@ def index():
     userLogged = request.cookies.get('username')
     return render_template('index.html', userLogged = userLogged)
 
+@app.route('/_rate')
+def rate():
+    id = request.args.get("id")
+    rating = request.args.get("rating")
+    ratingValues = [-1, -0.5, 0, 0.5, 1]
+ 
+    idUser = float(request.cookies.get('idUser'))
+    df = pd.read_csv('data/web_input.csv')
+    
+    for index, row in df.iterrows():
+        if row["USER_ID"] == idUser:
+            break
+    jokeToUpdate = "Joke_" + id
+    rating = int(rating) - 1
+
+    df.at[index, jokeToUpdate] = ratingValues[rating]
+    df.at[index, 'NEED_TO_CHANGE'] = 1
+
+    df.to_csv("data/web_input.csv", index=False)
+
+    return "success"
+
 @app.route('/random/')
 def random():
     try:
-        jokesList = list()
-        for i in range (1,100):
-            source = 'jokes/init' + str(i) + '.html'
-            document = open(source,'r')
-            content = document.read()
-            content = content.replace('\n', '<br>')
-            jokesList.append(content)
-        userLogged = request.cookies.get('username')
-        return render_template('random.html', jokesList = jokesList[:10], userLogged = userLogged)
+        voted = checkUserVoted()
+        jokesList = collections.OrderedDict()
+        if voted == 1:
+            time.sleep(1)
+            res = extractResults()
+            for i in range (0, len(res)):
+                fileToLoad = str(int(res[i]) + 1)
+                source = 'jokes/init' + fileToLoad + '.html'     
+                document = open(source,'r')
+                content = document.read()
+                content = content.replace('\n', '<br>')
+                jokesList[res[i]] = content          
+            userLogged = request.cookies.get('username')
+            return render_template('random.html', jokesList = list(jokesList.items())[:10], userLogged = userLogged)
+        else:
+            for i in range (1,100):
+                source = 'jokes/init' + str(i) + '.html'
+                document = open(source,'r')
+                content = document.read()
+                content = content.replace('\n', '<br>')
+                jokesList[i] = content
+            userLogged = request.cookies.get('username')
+            return render_template('random.html', jokesList = list(jokesList.items())[:10], userLogged = userLogged)
     except Exception, e:
         return str(e)    
 
@@ -64,14 +103,14 @@ def register():
     if request.method == "POST":
         uname = request.form['uname']
         passw = request.form['passw']
-        # print(uname, sys.stdout)
-        # print(passw, sys.stderr)
         sys.stdout.flush()
         newUserID = insertUserDefault()
         register = user(username = uname, password = passw, iduser = newUserID)
         db.session.add(register)
         db.session.commit()
-        return redirect(url_for("login"))
+        resp = make_response(redirect('/login'))
+        resp.set_cookie('idUser', str(newUserID))
+        return resp
     return render_template('register.html')
 
 def insertUserDefault():
@@ -84,13 +123,38 @@ def insertUserDefault():
         idNewUser = (max(idList) + 1)
         prepareNewRow = list()
         prepareNewRow.append(idNewUser)
-        prepareNewRow.extend(['1', '50.0'])
-        for nbJokes in range (0, 100):
+        prepareNewRow.extend(['0', '50.0'])
+        for nbJokes in range (0, 99):
             prepareNewRow.append('99.0')
     with open('data/web_input.csv','a') as fd:
         writer = csv.writer(fd)
         writer.writerow(prepareNewRow)
     return idNewUser
+
+def checkUserVoted():
+    idUser = request.cookies.get('idUser')
+    df = pd.read_csv('data/web_input.csv')
+    
+    for index, row in df.iterrows():
+        if row["USER_ID"] == str(idUser):
+            break
+    return df.at[index, 'NEED_TO_CHANGE']
+
+def extractResults():
+    idUser = request.cookies.get('idUser')
+    
+    source = 'results/web.csv'
+    results = list()
+    document = open(source,'r')
+    for line in document:
+        splited = line.split(',')
+        if splited[0] == idUser:
+            break
+    for i in range (1, 11):
+        joke = splited[i]
+        results.append(joke[5:])
+
+    return results
 
 if __name__ == "__main__":
     db.create_all()

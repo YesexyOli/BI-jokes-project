@@ -53,13 +53,13 @@ def calc_evaluation(full, prediction, indecies):
         abs_error = abs_error + np.abs(field_full - field_prediction)
         error = error + field_full - field_prediction
         x_square = x_square + np.abs(field_full - field_prediction) * np.abs(field_full - field_prediction)
-        s = s+ (field_full - field_prediction - mean)*(field_full - field_prediction - mean)
-    return abs_error, mean, np.sqrt(mean_x_square - mean_square), np.sqrt(s/(len(indecies)-1))
+        s = (field_full - field_prediction - mean)*(field_full - field_prediction - mean)
+    return abs_error, mean, np.sqrt(mean_x_square - mean_square), np.square(s/(len(indecies)-1))
 
 
 if __name__ == '__main__':
     start_col_jokes = 3
-    df_center = pd.read_csv('data/centers_norm', index_col=None, header=0).iloc[:, 3:]
+    df_center = pd.read_csv('data/full_rated_jokes_norm.csv', index_col=None, header=0).iloc[:, 3:]
     df_full = pd.read_csv('data/full_rated_jokes_norm_sub.csv', index_col=None, header=0)
     df_rating = df_full.iloc[:, 3:]
 

@@ -7,6 +7,8 @@ script needs. Change from 100 to 20 makes the script 5 times faster. """
 import sys
 import numpy as np
 import pandas as pd
+from multiprocessing import Pool
+from sklearn.metrics.pairwise import cosine_similarity
 from tqdm import tqdm
 
 
@@ -47,7 +49,7 @@ def make_perdiction_one_row(row, df_center, start_index_jokes):
             else: row_norm_with_prediction.loc[column] = -99
         row_norm_with_prediction['NEED_TO_CHANGE'] = 0
     row_denorm_with_pred = denormalize(row_norm_with_prediction, start_index_jokes, mean)
-    return row_denorm_with_pred #row_norm_with_prediction
+    return  row_denorm_with_pred #row_norm_with_prediction
 
 
 
@@ -92,6 +94,7 @@ if __name__ == '__main__':
         num_prozess = int(sys.argv[5])
         print_boolean = sys.argv[6] == 'True'
 
+        begin_subset = 0
         tqdm.pandas()
         if print_boolean:
             print(" Make Prediction per line.")

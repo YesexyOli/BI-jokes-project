@@ -2,6 +2,27 @@
 
 {% block content %}
   <!-- Header -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script> 
+
+<script>
+$(function(){
+	$('.rateButton').click(function(){
+    var value = ($(this).val());
+    var split = value.split('-')
+		$.ajax({
+			url: '/_rate',
+      data: { id: parseInt(split[0]), rating: parseInt(split[1])},
+      dataType: "text",
+			success: function(response){
+        $('#ratingDiv' + split[0]).remove();
+			},
+			error: function(error){
+				console.log(error);
+			}
+		});
+	});
+});
+</script>
   <header>
     <div class="container" id="maincontent" tabindex="-1">
       <div class="row">
@@ -17,22 +38,22 @@
           <hr class="star-light">
         </div>
         <div class="col-lg-8 col-lg-offset-2 text-center">
-          {% for joke in jokesList %}
-          <div class="jokeItem">
+          {% for id, joke in jokesList %}
+          <div id="joke{{ id }}" class="jokeItem">
             <p>
               {% autoescape false %}
               {{joke}}
               {% endautoescape %}
             </p>
             {% if userLogged %}
-            <div class="ratingDiv">
+            <div id="ratingDiv{{id}}" class="ratingDiv">
               <p>Rate this joke:</p>
               I hated it
-              <button>1</button>
-              <button>2</button>
-              <button>3</button>
-              <button>4</button>
-              <button>5</button>
+              <button class="rateButton" value="{{id}}-1">1</button>
+              <button class="rateButton" value="{{id}}-2">2</button>
+              <button class="rateButton" value="{{id}}-3">3</button>
+              <button class="rateButton" value="{{id}}-4">4</button>
+              <button class="rateButton" value="{{id}}-5">5</button>
               I liked it
             </div>
             {% endif %}
@@ -43,6 +64,4 @@
     </div>
   </header>
 
-  <script>
-  </script>
 {% endblock %}

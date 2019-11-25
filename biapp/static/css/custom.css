@@ -85,7 +85,7 @@ header .container {
   font-style: italic;
 }
 
-.ratingDiv button:hover {
+.ratingDiv button:hover, .ratingDiv button:focus,.ratingDiv button:active {
   background: rgb(255, 255, 255);
   border: 1px solid #18BC9C;
   color: #18BC9C;
