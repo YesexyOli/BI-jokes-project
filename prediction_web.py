@@ -7,8 +7,6 @@ script needs. Change from 100 to 20 makes the script 5 times faster. """
 import sys
 import numpy as np
 import pandas as pd
-from multiprocessing import Pool
-from sklearn.metrics.pairwise import cosine_similarity
 from tqdm import tqdm
 
 
