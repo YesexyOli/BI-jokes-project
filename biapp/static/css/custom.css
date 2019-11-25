@@ -56,3 +56,56 @@ footer hr.star-light:after {
 header .container {
   padding-top: 150px;
 }
+
+.jokeItem {
+  background: rgba(255, 255, 255, 0.90);
+  color: black;
+  border: 1px solid rgba(255, 255, 255);
+  border-radius: 20px;
+  margin: 20px 0px;
+}
+
+.jokeItem p {
+  padding: 20px 10px;
+}
+
+.ratingDiv {
+  margin-bottom: 20px;
+}
+
+.ratingDiv button {
+  background: #18BC9C;
+  border: 1px solid white;
+  color: white;
+  padding: 10px;
+}
+
+.ratingDiv p {
+  margin-bottom: 0px;
+  font-style: italic;
+}
+
+.ratingDiv button:hover {
+  background: rgb(255, 255, 255);
+  border: 1px solid #18BC9C;
+  color: #18BC9C;
+  transition: ease-out 0.5s;
+}
+
+.refreshButton {
+  background: #18BC9C;
+  border: 1px solid white;
+  color: white;
+  padding: 10px;
+  font-size: 25px;
+  border-radius: 20px;
+}
+.refreshButton:hover {
+  background: rgb(255, 255, 255);
+  border: 1px solid white;
+  color: #18BC9C;
+  padding: 10px;
+  font-size: 25px;
+  border-radius: 20px;
+  transition: ease-out 0.5s;
+}

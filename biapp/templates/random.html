@@ -6,13 +6,38 @@
     <div class="container" id="maincontent" tabindex="-1">
       <div class="row">
         <div class="intro-text">
-          <h1 class="name">A random joke for you :</h1>
+          <h1 class="name">Some random jokes for you:</h1>
+          <p>After voting on some jokes you will get jokes that you will like more.</p>
+          {% if not userLogged %}
+            <p>You need to be authenticated to rate</p>
+          {% endif %}
+          <br>
+          <a class="refreshButton" href="/random">Refresh the page</a>
+
           <hr class="star-light">
         </div>
         <div class="col-lg-8 col-lg-offset-2 text-center">
-          <p>
-            Joke
-          </p>
+          {% for joke in jokesList %}
+          <div class="jokeItem">
+            <p>
+              {% autoescape false %}
+              {{joke}}
+              {% endautoescape %}
+            </p>
+            {% if userLogged %}
+            <div class="ratingDiv">
+              <p>Rate this joke:</p>
+              I hated it
+              <button>1</button>
+              <button>2</button>
+              <button>3</button>
+              <button>4</button>
+              <button>5</button>
+              I liked it
+            </div>
+            {% endif %}
+          </div>
+          {% endfor %}
         </div>
       </div>
     </div>

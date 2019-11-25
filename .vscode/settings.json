@@ -1,0 +1,9 @@
+{
+    "sqltools.connections": [
+        {
+            "database": "${workspaceFolder}/biapp/test.db",
+            "dialect": "SQLite",
+            "name": "userdb"
+        }
+    ]
+}
