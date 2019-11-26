@@ -109,3 +109,10 @@ header .container {
   border-radius: 20px;
   transition: ease-out 0.5s;
 }
+
+.error {
+  background: red;
+  padding: 5px;
+  font-size: 20px;
+  margin-bottom: 20px;
+}

@@ -103,6 +103,9 @@ def register():
     if request.method == "POST":
         uname = request.form['uname']
         passw = request.form['passw']
+        exists = db.session.query(user.username).filter_by(username=uname).scalar() is not None
+        if exists:
+            return render_template('register.html', alreadyExists = True)
         sys.stdout.flush()
         newUserID = insertUserDefault()
         register = user(username = uname, password = passw, iduser = newUserID)

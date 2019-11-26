@@ -10,6 +10,9 @@
           <hr class="star-light">
         </div>
         <div class="col-lg-6 col-lg-offset-3 col-xs-12 text-center">
+            {% if alreadyExists %}            
+            <div class="error">User already exists, try again</div>
+            {% endif %}
             <form method="POST">
                 <div class="input-group col-xs-12 form-group">
                   <input type="text" name="uname" class="form-control" placeholder="Username">
