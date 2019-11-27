@@ -146,13 +146,14 @@ def checkUserVoted():
 def extractResults():
     idUser = request.cookies.get('idUser')
     
-    source = 'results/web.csv'
     results = list()
-    document = open(source,'r')
-    for line in document:
-        splited = line.split(',')
-        if splited[0] == idUser:
-            break
+    with open('results/web.csv','r') as document:
+        line = document.readline()
+        while line:
+            splited = line.split(',')
+            if float(splited[0]) == float(idUser):
+                break
+            line = document.readline()
     for i in range (1, 11):
         joke = splited[i]
         results.append(joke[5:])
