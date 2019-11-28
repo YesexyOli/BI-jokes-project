@@ -127,7 +127,7 @@ def insertUserDefault():
         prepareNewRow = list()
         prepareNewRow.append(idNewUser)
         prepareNewRow.extend(['0', '50.0'])
-        for nbJokes in range (0, 99):
+        for nbJokes in range (0, 100):
             prepareNewRow.append('99.0')
     with open('data/web_input.csv','a') as fd:
         writer = csv.writer(fd)
