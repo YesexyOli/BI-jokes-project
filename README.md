@@ -12,8 +12,9 @@ The recommander script works with python 3
 pip2 install flask
 pip2 install Flask-SQLAlchemy
 pip2 install pandas 
-pip install pandas
-pip install --upgrade tqdm
+pip2 install pandas
+pip2 install --upgrade tqdm
+pip install sklearn
 pip install numpy
 ```
 
@@ -21,17 +22,10 @@ pip install numpy
 
 ```
 python2 run.py
-python prediction_web.py data/web_input.csv data/centers_84.csv results/web.csv 3 1 True
+python3 prediction_web.py data/web_input.csv data/centers_norm results/web.csv 3 1 True
 ```
 
-## find your IP_Adress (Linux )
-
-```
- hostname -I
-```
 ## access website 
 ```
-{your_IP_Adress}:5000/ 
-192.168.0.8:5000 as an example
+127.0.0.1:5000
 ```
-If you still have Problems also change configuration as described in  http://dixu.me/2015/10/26/How_to_Allow_Remote_Connections_to_Flask_Web_Service/
